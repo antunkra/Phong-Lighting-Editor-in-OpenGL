@@ -2,6 +2,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+
 #include "renderer.h"
 
 static GLFWwindow* s_Window;
@@ -15,7 +19,7 @@ void glfwSetup() {
 }
 
 void glfwWindowSetup(GLFWwindow*& window) {
-	window = glfwCreateWindow(600, 600, "Phong lighting in OpenGL", NULL, NULL);
+	window = glfwCreateWindow(800, 800, "Phong lighting in OpenGL", NULL, NULL);
 	
 	if (window == NULL) {
 		std::cout << "Failed to create GLFW window!" << std::endl;
@@ -34,11 +38,47 @@ void gladSetup() {
 	}
 }
 
+void createMaterialEditor(const std::string& name, Material& material) {
+	ImGui::Begin(name.c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+
+	ImGui::Text("Diffuse Reflectivity: ");
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(60);
+	ImGui::DragFloat("##diffuseReflectivity", &material.diffuseReflectivity, 0.01f, 0.0f, 10.0f);
+	
+	ImGui::Text("Specular Reflectivity: ");
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(60);
+	ImGui::DragFloat("##specularReflectivity", &material.specularReflectivity, 0.01f, 0.0f, 10.0f);
+
+	ImGui::Text("Specular Exponent: ");
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(60);
+	ImGui::DragFloat("##specularExponent", &material.specularExponent, 0.1f, 0.0f, 100.0f);
+
+	ImGui::Text("Ambient Reflectivity: ");
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(60);
+	ImGui::DragFloat("##ambientReflectivity", &material.ambientReflectivity, 0.01f, 0.0f, 10.0f);
+
+	ImGui::Text("Emmisivity: ");
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(60);
+	ImGui::DragFloat("##emissivity", &material.emissivity, 0.01f, 0.0f, 10.0f);
+
+	ImGui::End();
+}
+
 int main() {
 	glfwSetup();
 	glfwWindowSetup(s_Window);
 	gladSetup();
-	glViewport(0, 0, 600, 600);
+	glViewport(0, 0, 800, 800);
+
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGui_ImplGlfw_InitForOpenGL(s_Window, true);
+	ImGui_ImplOpenGL3_Init();
 
 	Shader shader("shaders/vertexShader.glsl", "shaders/fragmentShader.glsl");
 	shader.use();
@@ -51,11 +91,25 @@ int main() {
 	glEnable(GL_DEPTH_TEST);
 	glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
 	while (!glfwWindowShouldClose(s_Window)) {
+		glfwPollEvents();
+
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+
+		createMaterialEditor("Sphere Material Editor", sphere.material);
 
 		renderer.draw(shader, camera, sphere);
 
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 		glfwSwapBuffers(s_Window);
-		glfwPollEvents();
 	}
+
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
 }
