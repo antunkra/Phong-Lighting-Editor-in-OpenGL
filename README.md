@@ -9,6 +9,10 @@ The editor features a scene containing a sphere illuminated by a directional lig
 - Fixed directional light illuminating the sphere
 - [Gouraud shading](https://en.wikipedia.org/wiki/Gouraud_shading) (per-vertex lighting)
 
+## Demo
+
+![Phong Lighting Editor Demo](demo.gif)
+
 ## Planned Features
 - [Phong shading](https://en.wikipedia.org/wiki/Phong_shading) (per-fragment lighting)
 - Multiple positional and directional lights
