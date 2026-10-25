@@ -2,6 +2,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <glm/gtc/type_ptr.hpp>
+
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
@@ -19,7 +21,7 @@ void glfwSetup() {
 }
 
 void glfwWindowSetup(GLFWwindow*& window) {
-	window = glfwCreateWindow(800, 800, "Phong lighting in OpenGL", NULL, NULL);
+	window = glfwCreateWindow(1000, 800, "Phong lighting in OpenGL", NULL, NULL);
 	
 	if (window == NULL) {
 		std::cout << "Failed to create GLFW window!" << std::endl;
@@ -40,6 +42,10 @@ void gladSetup() {
 
 void createMaterialEditor(const std::string& name, Material& material) {
 	ImGui::Begin(name.c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+
+	ImGui::Text("Color:");
+	ImGui::ColorPicker3("##color", glm::value_ptr(material.color), ImGuiColorEditFlags_NoInputs);
+	ImGui::Dummy(ImVec2(0.0f, 10.0f));
 
 	ImGui::Text("Diffuse Reflectivity: ");
 	ImGui::SameLine();
