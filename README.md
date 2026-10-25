@@ -4,14 +4,14 @@ A small interactive editor that visualizes the [Phong reflection model](https://
 
 The editor features a scene containing a sphere illuminated by a directional light source. You can modify the sphere's material properties in real time to visualize how different parameters of the Phong reflection model affect the appearance of a surface.
 
+## Demo
+
+![Phong Lighting Editor Demo](demo.gif)
+
 ## Current Features
 - Sphere with adjustable material properties through an editor UI
 - Fixed directional light illuminating the sphere
 - [Gouraud shading](https://en.wikipedia.org/wiki/Gouraud_shading) (per-vertex lighting)
-
-## Demo
-
-![Phong Lighting Editor Demo](demo.gif)
 
 ## Planned Features
 - [Phong shading](https://en.wikipedia.org/wiki/Phong_shading) (per-fragment lighting)
