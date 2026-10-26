@@ -91,10 +91,16 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\fragmentShader.glsl">
+    <None Include="shaders\gouraudFragment.glsl">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="shaders\vertexShader.glsl">
+    <None Include="shaders\gouraudVertex.glsl">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="shaders\phongFragment.glsl">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="shaders\phongVertex.glsl">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>

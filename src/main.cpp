@@ -40,7 +40,7 @@ void gladSetup() {
 	}
 }
 
-void createMaterialEditor(const std::string& name, Material& material) {
+void createMaterialEditor(const std::string& name, Material& material, Shader& phongShader, Shader& gouraudShader, Shader& activeShader) {
 	ImGui::Begin(name.c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize);
 
 	ImGui::Text("Color:");
@@ -72,6 +72,22 @@ void createMaterialEditor(const std::string& name, Material& material) {
 	ImGui::SetNextItemWidth(60);
 	ImGui::DragFloat("##emissivity", &material.emissivity, 0.01f, 0.0f, 10.0f);
 
+
+	ImGui::Dummy(ImVec2(0.0f, 20.0f));
+	ImGui::Text("Switch between Phong/Gouraud shading:");
+	static bool phongShaderActive = true;
+	if (ImGui::Button("Switch shaders", ImVec2(150.0f, 20.0f))) {
+		if (!phongShaderActive) {
+			phongShader.use();
+			activeShader = phongShader;
+		}
+		else {
+			gouraudShader.use();
+			activeShader = gouraudShader;
+		}
+		phongShaderActive = !phongShaderActive;
+	}
+
 	ImGui::End();
 }
 
@@ -86,11 +102,14 @@ int main() {
 	ImGui_ImplGlfw_InitForOpenGL(s_Window, true);
 	ImGui_ImplOpenGL3_Init();
 
-	Shader shader("shaders/vertexShader.glsl", "shaders/fragmentShader.glsl");
-	shader.use();
+	Shader gouraudShader("shaders/gouraudVertex.glsl", "shaders/gouraudFragment.glsl");
+	Shader phongShader("shaders/phongVertex.glsl", "shaders/phongFragment.glsl");
+	Shader activeShader = phongShader;
+
+	phongShader.use();
 
 	Camera camera;
-	Sphere sphere(1.0f, 50);
+	Sphere sphere(1.0f, 20);
 
 	Renderer renderer;
 
@@ -105,9 +124,9 @@ int main() {
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
-		createMaterialEditor("Sphere Material Editor", sphere.material);
+		createMaterialEditor("Sphere Material Editor", sphere.material, phongShader, gouraudShader, activeShader);
 
-		renderer.draw(shader, camera, sphere);
+		renderer.draw(activeShader, camera, sphere);
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
