@@ -14,10 +14,12 @@ uniform float ambientReflectivity;
 uniform float emissivity;
 
 void main() {
+	vec3 normalizedNormal = normalize(fragmentNormal);
+
 	vec3 halfwayVector = normalize(lightDirection + viewpointDirection);
 
-	vec3 diffuseLight = diffuseReflectivity * dot(lightDirection, fragmentNormal) * materialColor;
-	vec3 specularLight = specularReflectivity * pow(dot(halfwayVector, fragmentNormal), specularExponent) * vec3(1.0f, 1.0f, 1.0f);
+	vec3 diffuseLight = diffuseReflectivity * dot(lightDirection, normalizedNormal) * materialColor;
+	vec3 specularLight = specularReflectivity * pow(dot(halfwayVector, normalizedNormal), specularExponent) * vec3(1.0f, 1.0f, 1.0f);
 	vec3 ambientLight = ambientReflectivity * materialColor; // gets light from light source
 	vec3 emissiveLight = emissivity * materialColor;
 
