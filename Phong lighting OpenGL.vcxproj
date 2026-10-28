@@ -170,6 +170,7 @@ opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
+    <ClInclude Include="GameObject.h" />
     <ClInclude Include="geometry.h" />
     <ClInclude Include="material.h" />
     <ClInclude Include="renderer.h" />

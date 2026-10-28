@@ -14,29 +14,44 @@ struct Vertex {
 	Vertex(const glm::vec3& position, const glm::vec3& normal);
 };
 
-class Sphere {
+class Mesh {
 private:
-	float radius;
-	int vertexCnt, indexCnt;
+	unsigned int vertexCnt, indexCnt;
 	Vertex* vertexData;
 	unsigned int* indices;
-	int resolution;
 	unsigned int VAO, VBO, EBO;
+
 public:
-	Material material;
+	~Mesh();
+	unsigned int getVAO() const;
+	unsigned int getElementCount() const;
+
+protected:
+	void bufferSetup();
+	unsigned int getVertexCount();
+	void allocateVertexData(unsigned int numOfVertices);
+	void allocateIndexData(unsigned int numOfIndices);
+	unsigned int getVBO() const;
+	unsigned int getEBO() const;
+	Vertex getVertex(int index) const;
+	void setVertex(int index, Vertex value);
+	void setVertexPosition(int index, glm::vec3 value);
+	void setVertexNormal(int index, glm::vec3 value);
+	unsigned int getIndex(int index) const;
+	void setIndex(int index, unsigned int value);
+};
+
+class Sphere : public Mesh {
+private:
+	float radius;
+	int resolution;
 
 public:
 	Sphere();
 	Sphere(float radius);
 	Sphere(float radius, int resolution);
-	~Sphere();
-
-	unsigned int getVAO() const;
-	unsigned int getVertexCount() const;
-	unsigned int getElementCount() const;
 
 private:
-	void bufferSetup();
 	void generateBufferData();
 	void generateVertexPositions();
 	void generateVertexNormals();

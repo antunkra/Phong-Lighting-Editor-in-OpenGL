@@ -9,6 +9,7 @@
 #include <imgui_impl_opengl3.h>
 
 #include "renderer.h"
+#include "GameObject.h"
 
 static GLFWwindow* s_Window;
 
@@ -40,8 +41,8 @@ void gladSetup() {
 	}
 }
 
-void createMaterialEditor(const std::string& name, Material& material, Shader& phongShader, Shader& gouraudShader, Shader& activeShader) {
-	ImGui::Begin(name.c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+void createMaterialEditor(const std::string& name, Material& material) {
+	ImGui::BeginChild(name.c_str(), ImVec2(0, 0), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_Borders);
 
 	ImGui::Text("Color:");
 	ImGui::ColorPicker3("##color", glm::value_ptr(material.color), ImGuiColorEditFlags_NoInputs);
@@ -70,25 +71,27 @@ void createMaterialEditor(const std::string& name, Material& material, Shader& p
 	ImGui::Text("Emmisivity: ");
 	ImGui::SameLine();
 	ImGui::SetNextItemWidth(60);
-	ImGui::DragFloat("##emissivity", &material.emissivity, 0.01f, 0.0f, 10.0f);
+	ImGui::DragFloat("##emissivity", &material.emissivity, 0.01f, 0.0f, 1.0f);
 
+	ImGui::EndChild();
+}
 
-	ImGui::Dummy(ImVec2(0.0f, 20.0f));
+void createRenderingOptionsEditor(const std::string& name, Shader& phongShader, Shader& gouraudShader, Shader& activeShader) {
+	ImGui::BeginChild(name.c_str(), ImVec2(0, 0), ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_Borders);
+
 	ImGui::Text("Switch between Phong/Gouraud shading:");
 	static bool phongShaderActive = true;
 	if (ImGui::Button("Switch shaders", ImVec2(150.0f, 20.0f))) {
 		if (!phongShaderActive) {
-			phongShader.use();
 			activeShader = phongShader;
 		}
 		else {
-			gouraudShader.use();
 			activeShader = gouraudShader;
 		}
 		phongShaderActive = !phongShaderActive;
 	}
 
-	ImGui::End();
+	ImGui::EndChild();
 }
 
 int main() {
@@ -106,16 +109,24 @@ int main() {
 	Shader phongShader("shaders/phongVertex.glsl", "shaders/phongFragment.glsl");
 	Shader activeShader = phongShader;
 
-	phongShader.use();
-
 	Camera camera;
 	Sphere sphere(1.0f, 20);
+	Material defaultMaterial;
+	GameObject object(sphere, defaultMaterial, activeShader);
 
 	Renderer renderer;
+
+	float prevTime = glfwGetTime();
+	float currTime;
+	float deltaTime;
 
 	glEnable(GL_DEPTH_TEST);
 	glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
 	while (!glfwWindowShouldClose(s_Window)) {
+		currTime = glfwGetTime();
+		deltaTime = currTime - prevTime;
+		prevTime = currTime;
+
 		glfwPollEvents();
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -124,9 +135,21 @@ int main() {
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
-		createMaterialEditor("Sphere Material Editor", sphere.material, phongShader, gouraudShader, activeShader);
+		ImGui::Begin("Settings", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+		createMaterialEditor("Sphere Material Editor", object.material);
+		createRenderingOptionsEditor("Rendering Options", phongShader, gouraudShader, object.shader);
+		ImGui::End();
 
-		renderer.draw(activeShader, camera, sphere);
+		ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
+		ImGui::Begin("Framerate", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoTitleBar);
+
+		ImGui::Text("FPS: ");
+		ImGui::SameLine();
+		ImGui::Text("%.0f", 1 / deltaTime);
+
+		ImGui::End();
+
+		renderer.draw(camera, object);
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

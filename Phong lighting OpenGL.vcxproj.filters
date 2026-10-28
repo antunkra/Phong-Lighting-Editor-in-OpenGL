@@ -89,6 +89,9 @@
     <ClInclude Include="src\shader.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\gouraudFragment.glsl">

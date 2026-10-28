@@ -2,6 +2,7 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
+#include <iostream>
 
 Vertex::Vertex() : Vertex(glm::vec3(0.0f, 0.0f, 0.0f)) {}
 
@@ -9,7 +10,23 @@ Vertex::Vertex(const glm::vec3& position) : Vertex(position, glm::vec3(0.0f, 0.0
 
 Vertex::Vertex(const glm::vec3& position, const glm::vec3& normal) : position(position), normal(normal) {}
 
-void Sphere::bufferSetup() {
+Mesh::~Mesh() {
+	delete[] vertexData;
+	delete[] indices;
+}
+
+unsigned int Mesh::getVAO() const {
+	return VAO;
+}
+unsigned int Mesh::getElementCount() const {
+	return indexCnt;
+}
+
+unsigned int Mesh::getVertexCount() {
+	return vertexCnt;
+}
+
+void Mesh::bufferSetup() {
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 
@@ -29,9 +46,43 @@ void Sphere::bufferSetup() {
 	glEnableVertexAttribArray(1);
 }
 
-void Sphere::generateBufferData() {
-	vertexCnt = 2 + resolution * (resolution - 1);
+
+void Mesh::allocateVertexData(unsigned int numOfVertices) {
+	vertexCnt = numOfVertices;
 	vertexData = new Vertex[vertexCnt];
+}
+void Mesh::allocateIndexData(unsigned int numOfIndices) {
+	indexCnt = numOfIndices;
+	indices = new unsigned int[indexCnt];
+}
+unsigned int Mesh::getVBO() const {
+	return VBO;
+}
+unsigned int Mesh::getEBO() const {
+	return EBO;
+}
+Vertex Mesh::getVertex(int index) const {
+	return vertexData[index];
+}
+void Mesh::setVertex(int index, Vertex value) {
+	vertexData[index] = value;
+}
+void Mesh::setVertexPosition(int index, glm::vec3 value) {
+	vertexData[index].position = value;
+}
+void Mesh::setVertexNormal(int index, glm::vec3 value) {
+	vertexData[index].normal = value;
+}
+unsigned int Mesh::getIndex(int index) const {
+	return indices[index];
+}
+void Mesh::setIndex(int index, unsigned int value) {
+	indices[index] = value;
+}
+
+
+void Sphere::generateBufferData() {
+	allocateVertexData(2 + resolution * (resolution - 1));
 
 	generateVertexPositions();
 	generateVertexNormals();
@@ -39,8 +90,8 @@ void Sphere::generateBufferData() {
 }
 
 void Sphere::generateVertexPositions() {
-	vertexData[0].position = glm::vec3(0.0f, -radius, 0.0f);
-	vertexData[1].position = glm::vec3(0.0f, radius, 0.0f);
+	setVertexPosition(0, glm::vec3(0.0f, -radius, 0.0f));
+	setVertexPosition(1, glm::vec3(0.0f, radius, 0.0f));
 
 	for (int i = 1; i < resolution; i++) {
 		float theta = glm::radians(-90.0f) + glm::radians(180.0f) / resolution * i;
@@ -50,31 +101,30 @@ void Sphere::generateVertexPositions() {
 			float y = radius * glm::sin(theta);
 			float z = radius * glm::cos(theta) * glm::sin(phi);
 			int index = 2 + (i - 1) * resolution + j;
-			vertexData[index].position = glm::vec3(x, y, z);
+			setVertexPosition(index, glm::vec3(x, y, z));
 		}
 	}
 }
 
 void Sphere::generateVertexNormals() {
-	for (int i = 0; i < vertexCnt; i++) {
-		vertexData[i].normal = glm::normalize(vertexData[i].position);
+	for (int i = 0; i < getVertexCount(); i++) {
+		setVertexNormal(i, glm::normalize(getVertex(i).position));
 	}
 }
 
 void Sphere::generateIndices() {
-	indexCnt = 6 * resolution * (resolution - 1);
-	indices = new unsigned int[indexCnt];
+	allocateIndexData(6 * resolution * (resolution - 1));
 
 	int index = 0;
 	for (int i = 0; i < resolution; i++) {
-		indices[index++] = 0;
-		indices[index++] = 2 + (i+1) % resolution;
-		indices[index++] = 2 + i;
+		setIndex(index++, 0);
+		setIndex(index++, 2 + (i + 1) % resolution);
+		setIndex(index++, 2 + i);
 	}
 	for (int i = 0; i < resolution; i++) {
-		indices[index++] = 1;
-		indices[index++] = vertexCnt - resolution + i;
-		indices[index++] = vertexCnt - resolution + (i + 1) % resolution;
+		setIndex(index++, 1);
+		setIndex(index++, getVertexCount() - resolution + i);
+		setIndex(index++, getVertexCount() - resolution + (i + 1) % resolution);
 	}
 	for (int i = 0; i < resolution - 2; i++) {
 		for (int j = 0; j < resolution; j++) {
@@ -82,12 +132,12 @@ void Sphere::generateIndices() {
 			int bottomRight = 2 + i * resolution + (j + 1) % resolution;
 			int topLeft = 2 + (i + 1) * resolution + j;
 			int topRight = 2 + (i + 1) * resolution + (j + 1) % resolution;
-			indices[index++] = bottomLeft;
-			indices[index++] = bottomRight;
-			indices[index++] = topLeft;
-			indices[index++] = bottomRight;
-			indices[index++] = topRight;
-			indices[index++] = topLeft;
+			setIndex(index++, bottomLeft);
+			setIndex(index++, bottomRight);
+			setIndex(index++, topLeft);
+			setIndex(index++, bottomRight);
+			setIndex(index++, topRight);
+			setIndex(index++, topLeft);
 		}
 	}
 }
@@ -101,19 +151,3 @@ Sphere::Sphere(float radius, int resolution) : radius(radius), resolution(resolu
 Sphere::Sphere(float radius) : Sphere(radius, 20) {}
 
 Sphere::Sphere() : Sphere(0.5f) {}
-
-Sphere::~Sphere() {
-	delete[] vertexData;
-	delete[] indices;
-}
-
-
-unsigned int Sphere::getVAO() const {
-	return VAO;
-}
-unsigned int Sphere::getVertexCount() const {
-	return vertexCnt;
-}
-unsigned int Sphere::getElementCount() const {
-	return indexCnt;
-}
