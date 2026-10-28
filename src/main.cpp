@@ -9,7 +9,7 @@
 #include <imgui_impl_opengl3.h>
 
 #include "renderer.h"
-#include "GameObject.h"
+#include "game_object.h"
 
 static GLFWwindow* s_Window;
 

@@ -1,5 +1,5 @@
 #include "renderer.h"
-#include "GameObject.h"
+#include "game_object.h"
 
 void Renderer::draw(const Camera& camera, GameObject& gameObject) {
 	gameObject.shader.setMatrix4("viewTransform", camera.viewTransform);

@@ -18,6 +18,7 @@ Mesh::~Mesh() {
 unsigned int Mesh::getVAO() const {
 	return VAO;
 }
+
 unsigned int Mesh::getElementCount() const {
 	return indexCnt;
 }

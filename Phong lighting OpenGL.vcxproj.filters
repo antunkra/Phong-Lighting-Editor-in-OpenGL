@@ -89,7 +89,7 @@
     <ClInclude Include="src\shader.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject.h">
+    <ClInclude Include="src\game_object.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

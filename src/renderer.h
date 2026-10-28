@@ -2,7 +2,7 @@
 #define RENDERER_H
 
 #include "camera.h"
-#include "GameObject.h"
+#include "game_object.h"
 
 class Renderer {
 public:
