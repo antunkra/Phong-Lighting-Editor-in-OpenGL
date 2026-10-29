@@ -163,6 +163,7 @@ opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="imgui\misc\imgui_stdlib.cpp" />
     <ClCompile Include="src\camera.cpp" />
+    <ClCompile Include="src\editor_ui.cpp" />
     <ClCompile Include="src\geometry.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\renderer.cpp" />
@@ -175,6 +176,7 @@ opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="renderer.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="src\camera.h" />
+    <ClInclude Include="src\editor_ui.h" />
     <ClInclude Include="src\game_object.h" />
     <ClInclude Include="src\geometry.h" />
     <ClInclude Include="src\material.h" />
