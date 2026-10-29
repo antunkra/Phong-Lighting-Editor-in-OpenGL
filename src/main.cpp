@@ -72,9 +72,9 @@ int main() {
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		editor.draw(object);
-
 		renderer.draw(camera, object);
+
+		editor.draw(object);
 
 		glfwSwapBuffers(s_Window);
 	}
