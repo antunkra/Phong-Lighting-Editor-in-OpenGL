@@ -8,6 +8,12 @@ The editor features a scene containing a sphere illuminated by a directional lig
 
 ![Phong Lighting Editor Demo](demo.gif)
 
+## Build instructions
+
+- Clone the repository
+- Open the solution in Visual Studio
+- You should be able to run everything out of the box
+
 ## Current Features
 - Sphere with adjustable material properties through an editor UI
 - Fixed directional light illuminating the sphere
