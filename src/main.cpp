@@ -6,6 +6,8 @@
 #include "game_object.h"
 #include "editor_ui.h"
 
+#include <imgui.h>
+
 static GLFWwindow* s_Window;
 
 Shader* gouraudShader;
@@ -50,12 +52,15 @@ int main() {
 	gouraudShader = new Shader("shaders/gouraudVertex.glsl", "shaders/gouraudFragment.glsl");
 	phongShader = new Shader("shaders/phongVertex.glsl", "shaders/phongFragment.glsl");
 
-	Camera camera;
 	Sphere sphere(1.0f, 20);
 	Material defaultMaterial;
 	GameObject object(&sphere, &defaultMaterial, phongShader);
 
+	Camera camera;
+	CameraController controller(&camera);
+
 	Renderer renderer;
+
 	EditorUI editor(s_Window);
 
 	float prevTime = glfwGetTime();
@@ -71,6 +76,9 @@ int main() {
 		glfwPollEvents();
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		controller.checkInputs(s_Window);
+		controller.applyCameraMovement();
 
 		renderer.draw(camera, object);
 

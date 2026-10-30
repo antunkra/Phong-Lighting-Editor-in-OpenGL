@@ -11,13 +11,14 @@ The editor features a scene containing a sphere illuminated by a directional lig
 ## Current Features
 - Sphere with adjustable material properties through an editor UI
 - Fixed directional light illuminating the sphere
+- Movable camera
 - [Phong shading](https://en.wikipedia.org/wiki/Phong_shading) (per-fragment lighting)
 - [Gouraud shading](https://en.wikipedia.org/wiki/Gouraud_shading) (per-vertex lighting)
 
 ## Planned Features
-- Multiple positional and directional lights
+- Positional lights
+- Multiple lights
 - Customizable light colors
-- Movable camera
 - Importing 3D models from external files
 
 ## Technologies Used
