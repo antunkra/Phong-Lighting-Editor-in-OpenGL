@@ -2,8 +2,8 @@
 #include "game_object.h"
 
 void Renderer::draw(const Camera& camera, GameObject& gameObject) {
-	gameObject.shader->setMatrix4("viewTransform", camera.viewTransform);
-	gameObject.shader->setMatrix4("projectionTransform", camera.projectionTransform);
+	gameObject.shader->setMatrix4("viewTransform", camera.getViewTransform());
+	gameObject.shader->setMatrix4("projectionTransform", camera.getProjectionTransform());
 	gameObject.shader->setVector3("viewpointDirection", -camera.getLookDirection()); // TODO: MAKE viewpointDirection A CAMERA FIELD
 
 	gameObject.shader->setVector3("lightDirection", glm::vec3(0.58f, 0.58f, 0.58f));
